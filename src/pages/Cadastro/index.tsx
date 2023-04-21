@@ -334,7 +334,7 @@ const Formulario = styled.div`
 
 const DivForm = styled.div`
     width: 100%;
-    min-height: 95%;
+    min-height: 90%;
     display: flex;
     align-items: center;
     justify-content: center;
