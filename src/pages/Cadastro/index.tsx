@@ -3,25 +3,29 @@ import CarImg from "../../assets/side-image.jpg"
 import LogoImg from "../../assets/logo.svg"
 import ImgEntrar from "../../assets/log-in.svg"
 import Eye from "../../assets/eye.svg"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 const FormCadastro = () => {
 
     let navigate = useNavigate();
 
+    const [formulario, setFormulario] = useState({
+        email: '',
+        senha: ''
+    });
+
     const [isFormValid, setIsFormValid] = useState(false); // estado para verificar se o formulário pode ser enviado
-
-
-    // Validação Input
-
     const [isInputValid, setIsInputValid] = useState(false);
-
-    // Validação Name
-
     const [nomeValue, setNomeValue] = useState("");
     const [nomeError, setNomeError] = useState("");
+
+    const handleChange = (event: any) => {
+        const { name, value } = event.target;
+        setFormulario({ ...formulario, [name]: value });
+    };
 
     const handleInputBlur = (inputValue: any, inputErrorSetter: any, regex: any) => {
         if (!regex.test(inputValue)) {
@@ -37,8 +41,6 @@ const FormCadastro = () => {
         setNomeValue(event.target.value);
     };
 
-
-    // Validação E-mail 
 
     const [emailValue, setEmailValue] = useState("");
     const [emailError, setEmailError] = useState("");
@@ -57,8 +59,6 @@ const FormCadastro = () => {
         setEmailValue(event.target.value);
     };
 
-    // Validação Senha
-
     const [senhaValue, setSenhaValue] = useState("");
     const [senhaError, setSenhaError] = useState("");
 
@@ -72,14 +72,11 @@ const FormCadastro = () => {
         }
     };
 
-    const handleInputChangeSenha = (event:any) => {
+    const handleInputChangeSenha = (event: any) => {
         setSenhaValue(event.target.value);
     };
 
-
-    //Validação Regex para os Inputs
-
-    const handleSubmit = (event:any) => {
+    const handleSubmit = (event: any) => {
 
         event.preventDefault();
 
@@ -94,21 +91,23 @@ const FormCadastro = () => {
         setIsFormValid(isInputValid && nomeError === "" && emailError === "" && senhaError === "" && nomeValue !== "" && emailValue !== "" && senhaValue !== "")
         if (isFormValid) {
 
+            axios.post('https://apicadastromikael.onrender.com/cadastro', formulario)
+                .then(response => {
+                    console.log('POST bem-sucedido!');
+                })
+                .catch(error => {
+                    console.error('Ocorreu um erro durante o POST:', error);
+                });
+
             setNomeValue("");
             setNomeError("");
             setEmailValue("");
             setEmailError("");
             setSenhaValue("");
             setSenhaError("");
-
-            alert(`Usuário Cadastrado com Sucesso!`);
-
             navigate('/');
         }
     };
-
-
-    //Mostrar / Ocultar Senha
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -116,8 +115,9 @@ const FormCadastro = () => {
         setShowPassword(!showPassword);
     };
 
-
-
+    useEffect(() => {
+        setIsFormValid(isInputValid && nomeError === "" && emailError === "" && senhaError === "" && nomeValue !== "" && emailValue !== "" && senhaValue !== "");
+    }, [isInputValid, nomeError, emailError, senhaError, nomeValue, emailValue, senhaValue]);
 
     return (
 
@@ -156,9 +156,14 @@ const FormCadastro = () => {
                             <Input
                                 id="email"
                                 type="email"
+                                name="email"
                                 placeholder="Digite seu E-mail"
-                                value={emailValue}
-                                onChange={handleInputChangeEmail}
+                                value={formulario.email}
+                                onChange={(event) => {
+                                    handleInputChangeEmail(event);
+                                    handleChange(event);
+                                }
+                                }
                                 onBlur={() => handleInputBlurEmail(emailValue, setEmailError, /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/)}
                                 style={{ border: emailError ? "1px solid red" : "1px solid" }}
                             />
@@ -171,13 +176,18 @@ const FormCadastro = () => {
                                     id="senha"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Digite sua senha"
-                                    value={senhaValue}
-                                    onChange={handleInputChangeSenha}
+                                    name="senha"
+                                    value={formulario.senha}
+                                    onChange={(event) => {
+                                        handleInputChangeSenha(event);
+                                        handleChange(event);
+                                    }
+                                    }
                                     onBlur={() => handleInputBlurSenha(senhaValue, setSenhaError, /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/)}
                                     style={{ border: senhaError ? "1px solid red" : "1px solid" }}
                                 />
                                 {senhaError && <Error>{senhaError}</Error>}
-                                
+
                                 <PasswordToggle type="button" onClick={handleShowPassword}>
                                     <img src={Eye} alt="Exibir senha" />
                                 </PasswordToggle>
