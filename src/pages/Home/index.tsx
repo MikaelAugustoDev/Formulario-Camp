@@ -5,6 +5,7 @@ import ImgEntrar from "../../assets/log-in.svg"
 import Eye from "../../assets/eye.svg"
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import axios from "axios"
 
 const HomeForm = () => {
 
@@ -13,6 +14,30 @@ const HomeForm = () => {
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
     };
+
+    const [formulario, setFormulario] = useState({
+        email: '',
+        senha: ''
+    });
+
+    const handleChange = (event: any) => {
+        const { name, value } = event.target;
+        setFormulario({ ...formulario, [name]: value });
+    };
+
+    const handleSubmit = (event: any) => {
+
+        event.preventDefault();
+
+        axios.post('https://apicadastromikael.onrender.com/login', formulario)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.error(error.message);
+            });
+
+    }
 
     return (
 
@@ -32,7 +57,7 @@ const HomeForm = () => {
 
                         <P>Entre com suas informações de cadastro.</P>
 
-                        <Form>
+                        <Form onSubmit={handleSubmit}>
 
                             <Label htmlFor="email">E-mail</Label>
 
@@ -40,6 +65,9 @@ const HomeForm = () => {
                                 id="email"
                                 type="email"
                                 placeholder="Digite seu E-mail"
+                                name="email"
+                                value={formulario.email}
+                                onChange={handleChange}
                             />
 
                             <Label htmlFor="senha">Senha</Label>
@@ -49,11 +77,16 @@ const HomeForm = () => {
                                     id="senha"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Digite sua senha"
+                                    name="senha"
+                                    value={formulario.senha}
+                                    onChange={handleChange}
                                 />
                                 <PasswordToggle type="button" onClick={handleShowPassword}>
                                     <img src={Eye} alt="Exibir senha" />
                                 </PasswordToggle>
                             </PasswordInputContainer>
+
+
 
                             <DivInfoInput>
 
@@ -63,7 +96,7 @@ const HomeForm = () => {
                                         type="checkbox"
                                         id="checkbox"
                                     />
-                                    
+
                                     <LabelCheck htmlFor="checkbox">Lembre-me</LabelCheck>
 
                                 </Caixinha>
@@ -95,6 +128,14 @@ const HomeForm = () => {
     )
 
 }
+
+// const Error = styled.span`
+//     color: red; 
+//     font-size: 12px; 
+//     margin-top: -20px;
+//     width: 90%;
+//     text-align: center;
+// `
 
 const LinkEdit = styled(Link)`
     text-decoration: none;

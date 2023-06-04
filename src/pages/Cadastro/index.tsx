@@ -17,7 +17,7 @@ const FormCadastro = () => {
         senha: ''
     });
 
-    const [isFormValid, setIsFormValid] = useState(false); // estado para verificar se o formulário pode ser enviado
+    const [isFormValid, setIsFormValid] = useState(false);
     const [isInputValid, setIsInputValid] = useState(false);
     const [nomeValue, setNomeValue] = useState("");
     const [nomeError, setNomeError] = useState("");
