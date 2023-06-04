@@ -6,8 +6,11 @@ import Eye from "../../assets/eye.svg"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
+import { useNavigate } from "react-router-dom";
 
 const HomeForm = () => {
+
+    const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -27,18 +30,26 @@ const HomeForm = () => {
 
     const [error, setError] = useState('');
 
+    const [loggedIn, setLoggedIn] = useState(false);
+
     const handleSubmit = (event: any) => {
 
         event.preventDefault();
 
         axios.post('https://apicadastromikael.onrender.com/login', formulario)
             .then(response => {
-                console.log(response.data.msg)
+                console.log(response.data.msg);
+                setLoggedIn(true);
+                navigate("/home")
             })
             .catch(error => {
                 console.error(error);
                 setError(error.response.data.msg);
             });
+    }
+
+    if (loggedIn) {
+        return null
     }
 
     return (
