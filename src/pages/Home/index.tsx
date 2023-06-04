@@ -25,18 +25,20 @@ const HomeForm = () => {
         setFormulario({ ...formulario, [name]: value });
     };
 
+    const [error, setError] = useState('');
+
     const handleSubmit = (event: any) => {
 
         event.preventDefault();
 
         axios.post('https://apicadastromikael.onrender.com/login', formulario)
             .then(response => {
-                console.log(response);
+                console.log(response.data.msg)
             })
             .catch(error => {
-                console.error(error.message);
+                console.error(error);
+                setError(error.response.data.msg);
             });
-
     }
 
     return (
@@ -86,30 +88,9 @@ const HomeForm = () => {
                                 </PasswordToggle>
                             </PasswordInputContainer>
 
+                            <Error>{error}</Error>
 
-
-                            <DivInfoInput>
-
-                                <Caixinha>
-
-                                    <Check
-                                        type="checkbox"
-                                        id="checkbox"
-                                    />
-
-                                    <LabelCheck htmlFor="checkbox">Lembre-me</LabelCheck>
-
-                                </Caixinha>
-
-                                <Esqueceu>
-
-                                    <A href="#">Esqueci minha senha</A>
-
-                                </Esqueceu>
-
-                            </DivInfoInput>
-
-                            <Button>Entrar</Button>
+                            <Button type="submit">Entrar</Button>
 
                             <LinkCadastro>Não tem uma conta? <LinkEdit to="/cadastro">Registre-se</LinkEdit></LinkCadastro>
 
@@ -129,13 +110,12 @@ const HomeForm = () => {
 
 }
 
-// const Error = styled.span`
-//     color: red; 
-//     font-size: 12px; 
-//     margin-top: -20px;
-//     width: 90%;
-//     text-align: center;
-// `
+const Error = styled.span`
+    color: red; 
+    font-size: 12px; 
+    width: 90%;
+    text-align: center;
+`
 
 const LinkEdit = styled(Link)`
     text-decoration: none;
@@ -157,98 +137,13 @@ const Button = styled.button`
     border-radius: 5px;
     font-size: 16px;
     text-transform: uppercase;
+    margin-top: 20px;
     margin-bottom: 20px;
     color: #24221f;
 
     :hover {
         cursor: pointer;
     }
-`
-
-const A = styled.a`
-    font-size: 12px;
-    color: #ffc632;
-    font-weight: bold;
-    text-decoration: none;
-
-    @media (max-width: 320px) {
-        font-size: 10px;
-    }
-`
-
-const LabelCheck = styled.label`
-    color: #afb6c2;
-    font-size: 12px;
-
-    @media (max-width: 320px) {
-        width: 100%;
-    }
-
-    @media (max-width: 320px) {
-        font-size: 10px;
-    }
-`
-
-const Check = styled.input`
-    position: relative;
-    appearance: none;
-    -webkit-appearance: none;
-    border: 1px solid #afb6c2;
-    width: 15px;
-    height: 15px;
-    background-color: transparent;
-
-    :checked {
-        background: #ffc632;
-    }
-
-    ::before {
-        content: '';
-        position: absolute;
-        top: 0px;
-        left: 4px;
-        width: 3px;
-        height: 9px;
-        border: solid #24221f;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-        opacity: 0;
-    }
-    
-    :checked::before {
-        opacity: 1;
-    }
-
-    @media (max-width: 375px) {
-        width: 20%;
-    }
-    
-`
-
-const Esqueceu = styled.div`
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    padding-left: 20px;
-
-    @media (max-width: 375px) {
-        width: 70%;
-    }
-`
-const Caixinha = styled.div`
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-`
-
-const DivInfoInput = styled.div`
-    width: 100%;
-    height: 30px;
-    display: flex;
-    margin-bottom: 10px;
 `
 
 const Input = styled.input`
